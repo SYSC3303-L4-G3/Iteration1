@@ -1,5 +1,6 @@
 /**This class is a representation of an elevator
  * @author Jiatong Han
+ * @anthor Boshen Zhang
  */
 import data_structure.*;
 
@@ -11,8 +12,8 @@ import java.net.SocketException;
 import java.util.*;
 
 public class Elevator implements Runnable {
-    public static final int UP = 1;
-    public static final int DOWN = -1;
+    public static final String UP = "up";
+    public static final String DOWN = "down";
     public static final int STILL = 0;
     private int id;
     private int currentHeight= STILL;
@@ -43,37 +44,37 @@ public class Elevator implements Runnable {
      * Constructor for Elevator class
      * @param id
      */
-    public Elevator(int id) {
-        idle=new Idle(this);
-        closing=new Closing(this);
-        opening =new Opening(this);
-        moveEle=new MoveEle(this);
-        reachFloor=new ReachFloor(this);
+//    public Elevator(int id) {
+//        idle=new Idle(this);
+//        closing=new Closing(this);
+//        opening =new Opening(this);
+//        moveEle=new MoveEle(this);
+//        reachFloor=new ReachFloor(this);
+//
+//        currentState =idle;
+//        this.id=id;
+//    }
 
-        currentState =idle;
-        this.id=id;
-    }
-
-    public Elevator(Scheduler scheduler) {
-        idle=new Idle(this);
-        closing=new Closing(this);
-        opening =new Opening(this);
-        moveEle=new MoveEle(this);
-        reachFloor=new ReachFloor(this);
-
-        currentState =idle;
-
-        this.scheduler = scheduler;
-        scheduler.addElevator(this);
-    }
-  
+//    public Elevator(Scheduler scheduler) {
+//        idle=new Idle(this);
+//        closing=new Closing(this);
+//        opening =new Opening(this);
+//        moveEle=new MoveEle(this);
+//        reachFloor=new ReachFloor(this);
+//
+//        currentState =idle;
+//
+//        this.scheduler = scheduler;
+//        scheduler.addElevator(this);
+//    }
+//  
     /**
      * Overload constructor for Elevator class
      */
     public Elevator(){
         try{
             sendSocket = new DatagramSocket();
-            receiveSocket = new DatagramSocket(Id);
+            receiveSocket = new DatagramSocket(2);
         }catch (SocketException se){
             se.printStackTrace();
             System.exit(1);
@@ -159,8 +160,8 @@ public class Elevator implements Runnable {
      * receiveRequest 
      */
     public void receiveRequest(RequestMsg requestMsg){
-        int direction=requestMsg.getMovement();
-        int from=requestMsg.getFrom();
+        String direction=requestMsg.getDirection();
+        int from=requestMsg.getstartFloor();
         int destination=requestMsg.getDestination();
         if(currentDirection==UP){
             if(direction==UP){
@@ -186,7 +187,7 @@ public class Elevator implements Runnable {
             if(from>(getCurrentFloor())){
                 currentDirection=UP;
                 receiveRequest(requestMsg);
-            }else if(from<(currentDirection/10)){
+            }else if(from < (currentDirection/10)){
                 currentDirection=DOWN;
                 receiveRequest(requestMsg);
             }else{
@@ -389,7 +390,7 @@ public class Elevator implements Runnable {
 
         while (true) {
 
-            scheduler.getRequest();
+        	receviveFromScheduler();
         }
     }
     
@@ -397,7 +398,10 @@ public class Elevator implements Runnable {
      * main method 
      */
     public static void main(String[] args) {
-        Elevator elevator=new Elevator();
-        elevator.receiveRequest(new RequestMsg(5,DOWN,1));
+    	Thread elevThread;
+
+    	elevThread = new Thread(new Elevator(),"The elevator");
+
+    	elevThread.start();
     }
 }
