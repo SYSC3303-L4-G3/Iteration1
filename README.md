@@ -1,15 +1,13 @@
 # SYSC 3303 PROJECT
 
-Date: Mar 12th 2022.  
-**Version 3.0**
+Date: Mar 27th 2022.  
+**Version 4.0**
 
 ## - RequestMsg
 This class is used to express the format of massage communicated between each class. In this case, we use four numbers to represent where original floor from, elevator id, elevator movements and destination.
 
 ## - Floor.java 
-This classs represents the Floor Subsystem which emulates a floor in a building. The floor Subsystem exchanges messages with the scheduler. The readEvent method can receive the input from user, then floor_send method is used to send information to scheduler for the next step. After all system finish successfully, Floor will claim that elevator has reached there.
-
-This time the floor has Idle, Requesting and Waiting states, it will changed if the last state finished.
+Floor will receive the user input from input.txt, it will use UTP methods and send packet to scheduler.
 
 ### For the elevator systems, there are 4 different states. The default state is called idle state and whenever the elevator gets requests from scheduler, it will turn to Closing state meaning doors closed and prepare to move which is called MoveEle state. When the elevator reach the destination floor, it will become to Opening state and then change to idle to wait for the next request.
 
@@ -41,7 +39,7 @@ This class contains the main method used to run the code.
 
 ### Breakdown of responibilites:
 - Han Jiatong:- Elevator.java, Elevator system, test case
-- Zhang Boshen:- Floor.java, Scheduler.java, Elevator.java, UML sequence diagram, README
+- Zhang Boshen:- Floor.java, Scheduler.java, Elevator.java, UML sequence diagram, README.md, javadoc
 - Iyamu Ese:- UML Class diagram, Javadoc
 - Ziheng Zhu: State diagram
 
