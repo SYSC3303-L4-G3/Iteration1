@@ -1,4 +1,4 @@
- * @author  Boshen Zhang
+ /* @author  Boshen Zhang
  * @version 4.0
  * 
  * Class Scheduler emulates/handles the scheduling of 
