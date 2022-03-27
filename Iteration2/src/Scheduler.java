@@ -1,6 +1,5 @@
-/**
  * @author  Boshen Zhang
- * @version 3.0
+ * @version 4.0
  * 
  * Class Scheduler emulates/handles the scheduling of 
  */
@@ -45,17 +44,17 @@ public class Scheduler implements Runnable {
         }
     }
     
-    //Not used for iteration 3
-    public synchronized void handleRequest(RequestMsg msg) {
-
-        while (!request.isEmpty()) {
-            try {
-                wait(); // wait when there is no destinations to go
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
-
+    //Not used for iteration 4
+//    public synchronized void handleRequest(RequestMsg msg) {
+//
+//        while (!request.isEmpty()) {
+//            try {
+//                wait(); // wait when there is no destinations to go
+//            } catch (InterruptedException e) {
+//                return;
+//            }
+//        }
+//
 //        if(msg != null){
 //            destiUp.add(msg.getDestination());
 //        }
@@ -63,10 +62,10 @@ public class Scheduler implements Runnable {
 //            destiDown.add(msg.getDestination());
 //        }
 //        else;
-        request.add(msg);
-
-        notifyAll();
-    }
+//        request.add(msg);
+//
+//        notifyAll();
+//    }
     
     /**
      * addElevator adds elevator to requests
@@ -141,10 +140,12 @@ public class Scheduler implements Runnable {
      * receiveFromFloor receives request from floor
      */
     public void receiveFromFloor() {
+    	
     	if(destiUp.isEmpty()&&destiDown.isEmpty()) {
 			byte msg[] = new byte[40];
 		}
-    	receivePacket = Floor.waitPacket(receiveSocket, "Scheduler");
+    	
+    	receivePacket = waitPacket(receiveSocket, "Scheduler");
     	byte[] msg = receivePacket.getData();
     	req = msg;
     	System.out.println("Scheduler receved floor request");
@@ -155,32 +156,73 @@ public class Scheduler implements Runnable {
     	if(msg[0] < msg[3]) {
     		destiUp.add((int) msg[3]);		
     	}
-    	DatagramPacket reply = Floor.waitPacket(receiveSocket, "Scheduler");
-		Floor.sendPacket(reply.getData(), reply.getLength(), reply.getAddress(), 
+    	
+    	//DatagramPacket reply = waitPacket(receiveSocket, "Scheduler");
+		Floor.sendPacket(receivePacket.getData(), receivePacket.getLength(), receivePacket.getAddress(), 
 				receivePacket.getPort(), sendSocket);
        
     }
+    /**
+     * Wait the packet from floor
+     * @param s
+     * @param source
+     * @return
+     */
+    public DatagramPacket waitPacket(DatagramSocket s, String source){
+		
+		byte data[] = new byte[40];
+		
+		DatagramPacket receivedPacket = new DatagramPacket(data, data.length);
+		System.out.println(source + " is waiting");
+		
+		try{
+			System.out.println("waiting...");
+			s.receive(receivedPacket);
+		}catch (IOException e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		System.out.println("From host: " + receivedPacket.getAddress());
+		System.out.println("Destination host port: " + receivedPacket.getPort());
+		return receivedPacket;
+	}
+    
+    
     
     @Override
 	public void run(){
 		MachineState state = MachineState.Waiting;
 		while (true) {
-			while (state.currentState() == "Waiting") {
+			while (state.currentState().equals("Waiting")) {
+				
 				receiveFromFloor();
 				System.out.println("elevator goes" + req[3]);
 				state = state.nextState();
 			}
 				
-			while (state.currentState() == "Instructing") {
+			while (state.currentState().equals("Instructing")) {
 				DatagramPacket receivePacket = Floor.waitPacket(receiveSocket, "Scheduler");
 				
 				Floor.sendPacket(receivePacket.getData(), receivePacket.getLength(), 
-						receivePacket.getAddress(), req[1], sendSocket);
+						receivePacket.getAddress(), 2, sendSocket);
 				System.out.println("elevator" + req[1] + "should move");
 				state = state.nextState();
 			}
 		}
 	}
+    /**
+     * Main method
+     * @param args
+     */
+    public static void main(String[] args) {
+    	Thread schedThread;
+
+    	schedThread = new Thread(new Scheduler(),"The scheduler");
+
+        schedThread.start();
+    }
     
 }
   
