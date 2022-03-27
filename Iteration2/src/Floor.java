@@ -1,4 +1,4 @@
- * @author : Boshen Zhang
+ /* @author : Boshen Zhang
  * @version 4.0
  * Class Floor represents a floor in a building
  */
