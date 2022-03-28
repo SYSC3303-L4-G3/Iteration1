@@ -20,6 +20,17 @@ public class RequestMsg {
         this.destination = destination;
     }
 
+    public static int parseDirection(String direction){
+        if(direction=="UP"){
+            return 1;
+        }else if(direction=="DOWN"){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
+
+
     public void setFrom(LocalTime time) {
         this.time = time;
     }

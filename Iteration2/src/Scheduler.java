@@ -29,7 +29,7 @@ public class Scheduler implements Runnable {
     String ELEVATOR_IP_ADDRESS = "";
     
     /**
-     * COnstructor for class Scheduler
+     * Constructor for class Scheduler
      */
     public Scheduler() {
     	try {

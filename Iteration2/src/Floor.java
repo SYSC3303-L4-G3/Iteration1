@@ -23,7 +23,7 @@ public class Floor implements Runnable {
 
     /**
     * Constructor for floor
-    * @param scheduler
+    * @param
     */
     public Floor() {
       
@@ -99,7 +99,7 @@ public class Floor implements Runnable {
     
 	/**
      * readEvent receives request from scheduler
-     * @param requestMsg
+     * @param info
      * @return
      */
     public static byte[] readEvent(ArrayList<String> info){
@@ -142,13 +142,13 @@ public class Floor implements Runnable {
      * sendPacket sends messages to scheduler via UDP
      * @param array
      * @param len
-     * @param destadderss
+     * @param destAddress
      * @param port
      * @param socket
      */
-    public static void sendPacket(byte[]array, int len, InetAddress destadderss, int port, DatagramSocket socket){
+    public static void sendPacket(byte[]array, int len, InetAddress destAddress, int port, DatagramSocket socket){
 		
-		DatagramPacket packet = new DatagramPacket(array, len, destadderss, port);
+		DatagramPacket packet = new DatagramPacket(array, len, destAddress, port);
 		System.out.println("The Floor is sending a request:");
 		System.out.println("From host: " + packet.getAddress());
 		System.out.println("Destination host port: " + packet.getPort());

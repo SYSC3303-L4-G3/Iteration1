@@ -12,8 +12,8 @@ import java.net.SocketException;
 import java.util.*;
 
 public class Elevator implements Runnable {
-    public static final String UP = "up";
-    public static final String DOWN = "down";
+    public static final int UP = 1;
+    public static final int DOWN = -1;
     public static final int STILL = 0;
     private int id;
     private int currentHeight= STILL;
@@ -89,7 +89,7 @@ public class Elevator implements Runnable {
 
     }
 
-    private void receviveFromScheduler(){
+    private void receiveFromScheduler(){
 
         receivePacket = Floor.waitPacket(receiveSocket, "Elevator NO 2");
 
@@ -160,7 +160,7 @@ public class Elevator implements Runnable {
      * receiveRequest 
      */
     public void receiveRequest(RequestMsg requestMsg){
-        String direction=requestMsg.getDirection();
+        int direction=RequestMsg.parseDirection(requestMsg.getDirection());
         int from=requestMsg.getstartFloor();
         int destination=requestMsg.getDestination();
         if(currentDirection==UP){
@@ -269,10 +269,10 @@ public class Elevator implements Runnable {
      */
     public void receiveMsg(RequestMsg requestMsg) {
         System.out.println("Get message from scheduler");
-        System.out.println(requestMsg.getFrom());
-        System.out.println(requestMsg.getMovement());
+        System.out.println(requestMsg.getstartFloor());
+        System.out.println(requestMsg.getDirection());
         System.out.println(requestMsg.getDestination());
-        report(new RequestMsg(2, -1, 3), new ArrivalMessage(3, true));
+        report(new RequestMsg(null,2, "up", 3), new ArrivalMessage(3, true));
 
     }
 
@@ -282,7 +282,7 @@ public class Elevator implements Runnable {
      * @param arrivalMessage
      */
     private void report(RequestMsg requestMsg, ArrivalMessage arrivalMessage) {
-        if (scheduler.arrival(requestMsg.getMovement(), arrivalMessage)) {
+        if (scheduler.arrival(RequestMsg.parseDirection(requestMsg.getDirection()), arrivalMessage)) {
             System.out.println("Elevator has arrived floor No." + arrivalMessage.getFloor());
         }
         System.out.println("Report to scheduler");
@@ -390,7 +390,7 @@ public class Elevator implements Runnable {
 
         while (true) {
 
-        	receviveFromScheduler();
+        	receiveFromScheduler();
         }
     }
     
