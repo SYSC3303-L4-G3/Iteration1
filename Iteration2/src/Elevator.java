@@ -44,41 +44,33 @@ public class Elevator implements Runnable {
      * Constructor for Elevator class
      * @param id
      */
-//    public Elevator(int id) {
-//        idle=new Idle(this);
-//        closing=new Closing(this);
-//        opening =new Opening(this);
-//        moveEle=new MoveEle(this);
-//        reachFloor=new ReachFloor(this);
-//
-//        currentState =idle;
-//        this.id=id;
-//    }
+   public Elevator(int id) {
+       idle=new Idle(this);
+       closing=new Closing(this);
+       opening =new Opening(this);
+       moveEle=new MoveEle(this);
+       reachFloor=new ReachFloor(this);
 
-//    public Elevator(Scheduler scheduler) {
-//        idle=new Idle(this);
-//        closing=new Closing(this);
-//        opening =new Opening(this);
-//        moveEle=new MoveEle(this);
-//        reachFloor=new ReachFloor(this);
-//
-//        currentState =idle;
-//
-//        this.scheduler = scheduler;
-//        scheduler.addElevator(this);
-//    }
-//  
-    /**
-     * Overload constructor for Elevator class
+       currentState =idle;
+       this.id=id;
+   }
+
+   public Elevator(Scheduler scheduler) {
+       idle=new Idle(this);
+       closing=new Closing(this);
+       opening =new Opening(this);
+       moveEle=new MoveEle(this);
+       reachFloor=new ReachFloor(this);
+
+       currentState =idle;
+
+       this.scheduler = scheduler;
+       scheduler.addElevator(this);
+   }
+     /**
+     * Default constructor for Elevator class
      */
     public Elevator(){
-        try{
-            sendSocket = new DatagramSocket();
-            receiveSocket = new DatagramSocket(2);
-        }catch (SocketException se){
-            se.printStackTrace();
-            System.exit(1);
-        }
         idle=new Idle(this);
         closing=new Closing(this);
         opening =new Opening(this);
@@ -87,6 +79,15 @@ public class Elevator implements Runnable {
 
         currentState =idle;
 
+    }
+
+    /**
+     * Overload constructor for Elevator class
+     */
+    public Elevator(int id, ElevatorSubSystem elevatorSubSystem) {
+        this();
+        this.id=id;
+        this.elevatorSubSystem=elevatorSubSystem;
     }
 
     private void receiveFromScheduler(){
